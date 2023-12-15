@@ -1,0 +1,82 @@
+---
+import { MainMenu } from '@data/MenuMain';
+import type { MenuItem } from '@interfaces/menu';
+import { ViewTransitions } from 'astro:transitions';
+---
+
+<ViewTransitions />
+<nav class="navigation absolute right-1 top-1 h-full">
+	<div class="navigation-toggle absolute right-1 top-1 h-6 w-6" data-testid="navigation-toggle">
+		<span class="icon icon-[line-md--close-to-menu-transition] h-6 w-6" data-testid="navigation-toggle-icon"></span>
+	</div>
+	<div class="navigation-menu absolute top-6 h-auto w-auto bg-white p-6">
+		<ul>
+			{
+				MainMenu.map((menuItem: MenuItem) => (
+					<li class="pb-6 last:pb-1">
+						<a
+							href={menuItem.target}
+							data-testid={menuItem.label}
+							class="inline-flex cursor-pointer items-center gap-2 font-sans text-8xl antialiased hover:underline"
+						>
+							{menuItem.label && <label class="m-0">{menuItem.label}</label>}
+							{menuItem.icon && <icon class={menuItem.icon} />}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</nav>:
+
+<script>
+	let navigationOpen = false;
+
+	const navigationToggleIcon = document.querySelector('span.icon');
+	const navigationToggle = document.querySelector('div.navigation-toggle');
+	const navigationMenu = document.querySelector('div.navigation-menu');
+
+	navigationToggle.addEventListener('click', () => {
+		navigationOpen = !navigationOpen;
+
+		console.log('navigationOpen', navigationOpen);
+
+		if (navigationOpen) {
+			navigationMenu.classList.replace('navigation-menu-closed', 'navigation-menu-opened');
+		} else {
+			navigationMenu.classList.replace('navigation-menu-opened', 'navigation-menu-closed');
+		}
+	});
+</script>
+
+<style lang="scss">
+	.navigation {
+		&-menu {
+			&-opened {
+				animation: slide 1s ease-in;
+
+				@keyframes slide {
+					0% {
+						right: -100%;
+					}
+					100% {
+						right: 0%;
+					}
+				}:
+			}
+
+			&-closed {
+				animation: slide 1s ease-out;
+
+				@keyframes slide {
+					0% {
+						right: 0%;
+					}
+					100% {
+						right: -100%;
+					}
+				}
+			}
+		}
+	}
+</style>
